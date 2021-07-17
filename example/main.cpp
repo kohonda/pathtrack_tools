@@ -52,7 +52,7 @@ int main()
 
     // Reproduce the motion of the control target by numerical integration for simulation
     // cgmres::CGMRESSimulator simulator;
-    pathtrack_tools::MPCSimulator mpc_simulator(sampling_time);
+    pathtrack_tools::VehicleDynamicsSimulator vehicle_dynamics_simulator(sampling_time);
 
     // State and Control input
 
@@ -75,7 +75,6 @@ int main()
         const FrenetCoordinate ego_pose_frenet = frenet_serret_converter.global2frenet(course_manager.get_mpc_cource(), ego_pose_global);
 
         const auto estimated_dy_f = frenet_state_filter.estimate_dy_f(ego_pose_frenet.y_f);
-        // const auto estimated_dy_f = frenet_state_filter.estimate_dy_f(ego_pose_frenet, ego_twist);
 
         // ================================
         // Caluculate Control input here
@@ -85,7 +84,7 @@ int main()
         const double calculation_time = stop_watch.lap(); // calculation time at one control interval [msec]
 
         // Pose & Twist update by simulator
-        const auto [updated_ego_pose_global, updated_ego_twist] = mpc_simulator.update_ego_state(current_time, ego_pose_global, ego_twist, control_input_vec, sampling_time);
+        const auto [updated_ego_pose_global, updated_ego_twist] = vehicle_dynamics_simulator.update_ego_state(current_time, ego_pose_global, ego_twist, control_input_vec, sampling_time);
     }
 
     std::cout << "End Simulation" << std::endl;

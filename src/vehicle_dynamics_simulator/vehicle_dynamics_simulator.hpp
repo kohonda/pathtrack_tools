@@ -16,24 +16,24 @@
 namespace pathtrack_tools
 {
    ///
-   /// @class MPCSimulator
+   /// @class VehicleDynamicsSimulator
    /// @brief
    ///
 
-   class MPCSimulator
+   class VehicleDynamicsSimulator
    {
    public:
       /**
      * @brief Default constructor
      *
      */
-      MPCSimulator(const double &sampling_time);
+      VehicleDynamicsSimulator(const double &sampling_time);
 
       /**
      * @brief Destroy the VechcleSimulator object
      *
      */
-      ~MPCSimulator();
+      ~VehicleDynamicsSimulator();
 
       /**
      * @brief Update the ego car state with applied control input by numerical integration using the fourth-order Runge-Kutta method.

@@ -52,8 +52,10 @@ Twist ego_twist;
 // calculated control input (tire_angle, accel)
 double control_input_vec[EGO_INPUT::DIM];
 
+ pathtrack_tools::VehicleDynamicsSimulator vehicle_dynamics_simulator(sampling_time);
+
 // Update ego vehicle pose and twist
-const auto [updated_ego_pose_global, updated_ego_twist] = mpc_simulator.update_ego_state(current_time, ego_pose_global, ego_twist, control_input_vec, sampling_time);
+const auto [updated_ego_pose_global, updated_ego_twist] = vehicle_dynamics_simulator.update_ego_state(current_time, ego_pose_global, ego_twist, control_input_vec, sampling_time);
 
 ```
 

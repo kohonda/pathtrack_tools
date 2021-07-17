@@ -22,7 +22,7 @@ namespace pathtrack_tools
 
     TEST_F(CourseManagerTest, TestStraightLane_CSV)
     {
-        const std::string valid_cource = "/home/honda/PathTrack_Tools/reference_path/straight_lane.csv";
+        const std::string valid_cource = "/home/honda/pathtrack_tools/reference_path/straight_lane.csv";
         // StopWatch stop_watch;
         // stop_watch.lap();
         course_manager->set_cource_from_csv(valid_cource);
@@ -60,7 +60,7 @@ namespace pathtrack_tools
 
     TEST_F(CourseManagerTest, CircuitLane_CSV)
     {
-        const std::string valid_cource = "/home/honda/PathTrack_Tools/reference_path/circuit_lane.csv";
+        const std::string valid_cource = "/home/honda/pathtrack_tools/reference_path/circuit_lane.csv";
         course_manager->set_cource_from_csv(valid_cource);
 
         ASSERT_EQ(201, course_manager->get_path_size());
@@ -100,7 +100,7 @@ namespace pathtrack_tools
 
     TEST_F(CourseManagerTest, NotConst_CSV)
     {
-        const std::string valid_cource = "/home/honda/PathTrack_Tools/reference_path/not_const_value.csv";
+        const std::string valid_cource = "/home/honda/pathtrack_tools/reference_path/not_const_value.csv";
         course_manager->set_cource_from_csv(valid_cource);
 
         // curvature interporated
@@ -120,7 +120,7 @@ namespace pathtrack_tools
 
     TEST_F(CourseManagerTest, NotConst_CSV_2)
     {
-        const std::string valid_cource = "/home/honda/PathTrack_Tools/reference_path/not_const_value_2.csv";
+        const std::string valid_cource = "/home/honda/pathtrack_tools/reference_path/not_const_value_2.csv";
         course_manager->set_cource_from_csv(valid_cource);
         // curvature interporated
         EXPECT_NEAR(1.0e-9, course_manager->get_speed(1.0e-9), 1.0e-9);

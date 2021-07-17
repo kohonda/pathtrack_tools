@@ -2,17 +2,17 @@
 
 namespace pathtrack_tools
 {
-    MPCSimulator::MPCSimulator(const double &sampling_time)
+    VehicleDynamicsSimulator::VehicleDynamicsSimulator(const double &sampling_time)
     {
         initialize_input_queue(sampling_time);
     }
 
-    MPCSimulator::~MPCSimulator()
+    VehicleDynamicsSimulator::~VehicleDynamicsSimulator()
     {
     }
 
-    std::pair<Pose, Twist> MPCSimulator::update_ego_state(const double current_time, const Pose &current_ego_pose_global, const Twist &current_ego_twist, const double *control_input_vec,
-                                                          const double sampling_time)
+    std::pair<Pose, Twist> VehicleDynamicsSimulator::update_ego_state(const double current_time, const Pose &current_ego_pose_global, const Twist &current_ego_twist, const double *control_input_vec,
+                                                                      const double sampling_time)
     {
         const std::array<double, EGO_STATE_FOR_SIM::DIM> current_ego_vehicle_state = ego_struct_to_state(current_ego_pose_global, current_ego_twist);
 
@@ -35,7 +35,7 @@ namespace pathtrack_tools
         return {updated_ego_pose, updated_ego_twist};
     }
 
-    std::pair<FrenetCoordinate, Twist> MPCSimulator::update_pedestrian_state(const FrenetCoordinate &current_pose, const Twist &current_twist, const double sampling_time) const
+    std::pair<FrenetCoordinate, Twist> VehicleDynamicsSimulator::update_pedestrian_state(const FrenetCoordinate &current_pose, const Twist &current_twist, const double sampling_time) const
     {
         FrenetCoordinate updated_pose;
         Twist updated_twist;
@@ -50,7 +50,7 @@ namespace pathtrack_tools
         return {updated_pose, updated_twist};
     }
 
-    std::array<double, EGO_STATE_FOR_SIM::DIM> MPCSimulator::ego_struct_to_state(const Pose &ego_pose, const Twist &ego_twist) const
+    std::array<double, EGO_STATE_FOR_SIM::DIM> VehicleDynamicsSimulator::ego_struct_to_state(const Pose &ego_pose, const Twist &ego_twist) const
     {
         std::array<double, EGO_STATE_FOR_SIM::DIM> ego_state;
 
@@ -64,7 +64,7 @@ namespace pathtrack_tools
         return ego_state;
     }
 
-    std::pair<Pose, Twist> MPCSimulator::ego_state_to_struct(const std::array<double, EGO_STATE_FOR_SIM::DIM> &ego_state) const
+    std::pair<Pose, Twist> VehicleDynamicsSimulator::ego_state_to_struct(const std::array<double, EGO_STATE_FOR_SIM::DIM> &ego_state) const
     {
         Pose ego_pose;
         Twist ego_twist;
@@ -79,7 +79,7 @@ namespace pathtrack_tools
         return {ego_pose, ego_twist};
     }
 
-    void MPCSimulator::initialize_input_queue(const double &sampling_time)
+    void VehicleDynamicsSimulator::initialize_input_queue(const double &sampling_time)
     {
         size_t accel_input_queue_size = static_cast<size_t>(round(accel_delay_time_ / sampling_time));
         for (size_t i = 0; i < accel_input_queue_size; i++)
@@ -94,7 +94,7 @@ namespace pathtrack_tools
         }
     }
 
-    double MPCSimulator::delay_accel_input(const double &raw_accel_input)
+    double VehicleDynamicsSimulator::delay_accel_input(const double &raw_accel_input)
     {
         accel_input_queue_.push(raw_accel_input);
         const double delayed_accel_input = accel_input_queue_.front();
@@ -103,7 +103,7 @@ namespace pathtrack_tools
         return delayed_accel_input;
     }
 
-    double MPCSimulator::delay_angle_input(const double &raw_angle_input)
+    double VehicleDynamicsSimulator::delay_angle_input(const double &raw_angle_input)
     {
         angle_input_queue_.push(raw_angle_input);
         const double delayed_angle_input = angle_input_queue_.front();
@@ -112,7 +112,7 @@ namespace pathtrack_tools
         return delayed_angle_input;
     }
 
-    std::array<double, EGO_STATE_FOR_SIM::DIM> MPCSimulator::fx_kbm_without_delay(const double current_time, const std::array<double, EGO_STATE_FOR_SIM::DIM> &x, const double *u) const
+    std::array<double, EGO_STATE_FOR_SIM::DIM> VehicleDynamicsSimulator::fx_kbm_without_delay(const double current_time, const std::array<double, EGO_STATE_FOR_SIM::DIM> &x, const double *u) const
     {
         std::array<double, EGO_STATE_FOR_SIM::DIM> dx;
 
@@ -134,7 +134,7 @@ namespace pathtrack_tools
         return dx;
     }
 
-    std::array<double, EGO_STATE_FOR_SIM::DIM> MPCSimulator::fx_kbm_with_delay(const double current_time, const std::array<double, EGO_STATE_FOR_SIM::DIM> &x, const double *u)
+    std::array<double, EGO_STATE_FOR_SIM::DIM> VehicleDynamicsSimulator::fx_kbm_with_delay(const double current_time, const std::array<double, EGO_STATE_FOR_SIM::DIM> &x, const double *u)
     {
         const double raw_angle_input = u[EGO_INPUT::STEER_ANGLE];
         const double raw_accel_input = u[EGO_INPUT::ACCEL];
@@ -149,7 +149,7 @@ namespace pathtrack_tools
         return dx;
     }
 
-    std::array<double, EGO_STATE_FOR_SIM::DIM> MPCSimulator::fx_dbm_without_delay(const double current_time, const std::array<double, EGO_STATE_FOR_SIM::DIM> &x, const double *u) const
+    std::array<double, EGO_STATE_FOR_SIM::DIM> VehicleDynamicsSimulator::fx_dbm_without_delay(const double current_time, const std::array<double, EGO_STATE_FOR_SIM::DIM> &x, const double *u) const
     {
         const double d_x_g = x[EGO_STATE_FOR_SIM::TWIST_X] * std::cos(x[EGO_STATE_FOR_SIM::YAW_G]) - x[EGO_STATE_FOR_SIM::TWIST_Y] * std::sin(x[EGO_STATE_FOR_SIM::YAW_G]);
         const double d_y_g = x[EGO_STATE_FOR_SIM::TWIST_X] * std::sin(x[EGO_STATE_FOR_SIM::YAW_G]) + x[EGO_STATE_FOR_SIM::TWIST_Y] * std::cos(x[EGO_STATE_FOR_SIM::YAW_G]);
@@ -169,7 +169,7 @@ namespace pathtrack_tools
         return dx;
     }
 
-    std::array<double, EGO_STATE_FOR_SIM::DIM> MPCSimulator::fx_dbm_with_delay(const double current_time, const std::array<double, EGO_STATE_FOR_SIM::DIM> &x, const double *u)
+    std::array<double, EGO_STATE_FOR_SIM::DIM> VehicleDynamicsSimulator::fx_dbm_with_delay(const double current_time, const std::array<double, EGO_STATE_FOR_SIM::DIM> &x, const double *u)
     {
         const double raw_angle_input = u[EGO_INPUT::STEER_ANGLE];
         const double raw_accel_input = u[EGO_INPUT::ACCEL];
