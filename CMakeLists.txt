@@ -40,7 +40,7 @@ add_subdirectory(src)
 add_subdirectory(example)
 
 # Tests
-option(PATHTRACKTOOLS_BUILD_TESTS "Build tests" ON)
+option(PATHTRACKTOOLS_BUILD_TESTS "Build tests" OFF)
 message(STATUS "Build tests: ${PATHTRACKTOOLS_BUILD_TESTS}")
 if (PATHTRACKTOOLS_BUILD_TESTS)
   enable_testing()

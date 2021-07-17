@@ -65,7 +65,6 @@ int main()
     const double end_time = 40.0;
 
     // Simulation loop
-    // When imprement to the real-car, callback inside a loop.
     std::cout << "Start Simulation" << std::endl;
     for (double current_time = start_time; current_time < end_time; current_time += sampling_time)
     {

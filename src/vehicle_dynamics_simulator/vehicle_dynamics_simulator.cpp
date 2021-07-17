@@ -16,8 +16,6 @@ namespace pathtrack_tools
     {
         const std::array<double, EGO_STATE_FOR_SIM::DIM> current_ego_vehicle_state = ego_struct_to_state(current_ego_pose_global, current_ego_twist);
 
-        // TODO: uをarrayにしたいね...変えると面倒かもだけど std::function<std::array<double, 4>(const double, const std::array<double, 4>&, const double*)>
-
         auto state_func = [this](auto current_time, auto x, auto u) {
             const double speed_threshold_dynamics = 1.0; // [m/s] because dbm is less accurate at low vehicle speeds and cannot be used when vehicle speed is negative
             if (x[EGO_STATE_FOR_SIM::TWIST_X] < speed_threshold_dynamics)
