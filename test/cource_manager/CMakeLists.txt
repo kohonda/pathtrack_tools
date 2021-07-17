@@ -1,0 +1,1 @@
+add_unit_test(cource_manager cource_manager_test)

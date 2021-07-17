@@ -1,0 +1,1 @@
+add_unit_test(frenet_serret_converter frenet_serret_converter_test)
