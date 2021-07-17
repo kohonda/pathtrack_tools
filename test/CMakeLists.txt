@@ -33,7 +33,7 @@ endmacro()
 
 # add tests folder
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/frenet_serret_converter)
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/cource_manager)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/course_manager)
 
 
 

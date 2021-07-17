@@ -23,7 +23,7 @@ namespace pathtrack_tools
         FrenetSerretConverter *frenet_serret_converter;
     };
 
-    MPCCource set_cource_test(const std::string &csv_path)
+    MPCCourse set_course_test(const std::string &csv_path)
     {
         // csv read
         const rapidcsv::Document csv(csv_path);
@@ -32,22 +32,22 @@ namespace pathtrack_tools
         const std::vector<double> reference_x = csv.GetColumn<double>("reference.x");
         const std::vector<double> reference_y = csv.GetColumn<double>("reference.y");
         const std::vector<double> reference_speed = csv.GetColumn<double>("reference.speed");   // [m/s]
-        const std::vector<double> drivable_delta_y_f = csv.GetColumn<double>("drivable_width"); // Mainly, cource width
+        const std::vector<double> drivable_delta_y_f = csv.GetColumn<double>("drivable_width"); // Mainly, course width
 
-        MPCCource mpc_cource;
+        MPCCourse mpc_course;
 
-        mpc_cource.resize(reference_x.size());
-        mpc_cource.x = reference_x;
-        mpc_cource.y = reference_y;
-        mpc_cource.speed = reference_speed;
-        mpc_cource.drivable_width = drivable_delta_y_f;
+        mpc_course.resize(reference_x.size());
+        mpc_course.x = reference_x;
+        mpc_course.y = reference_y;
+        mpc_course.speed = reference_speed;
+        mpc_course.drivable_width = drivable_delta_y_f;
 
-        return mpc_cource;
+        return mpc_course;
     }
 
-    std::vector<double> calc_accumulated_path_length(const double &offset, const MPCCource &mpc_cource)
+    std::vector<double> calc_accumulated_path_length(const double &offset, const MPCCourse &mpc_course)
     {
-        std::vector<double> accumulated_path_length(mpc_cource.x.size());
+        std::vector<double> accumulated_path_length(mpc_course.x.size());
         for (size_t i = 0; i < accumulated_path_length.size(); i++)
         {
             // calculate accumulated path length, which is nearly equal to x_f
@@ -57,7 +57,7 @@ namespace pathtrack_tools
             }
             else
             {
-                const double delta_length = std::hypot(mpc_cource.x[i] - mpc_cource.x[i - 1], mpc_cource.y[i] - mpc_cource.y[i - 1]);
+                const double delta_length = std::hypot(mpc_course.x[i] - mpc_course.x[i - 1], mpc_course.y[i] - mpc_course.y[i - 1]);
                 accumulated_path_length[i] = accumulated_path_length[i - 1] + delta_length;
             }
         }
@@ -65,34 +65,34 @@ namespace pathtrack_tools
         return accumulated_path_length;
     }
 
-    void set_accumulated_path_length(const double &offset, MPCCource *mpc_cource)
+    void set_accumulated_path_length(const double &offset, MPCCourse *mpc_course)
     {
-        if (mpc_cource->size() == 0)
+        if (mpc_course->size() == 0)
         {
-            std::cerr << "[Warning] Reference Cource size is zero!" << std::endl;
+            std::cerr << "[Warning] Reference course size is zero!" << std::endl;
         }
 
-        mpc_cource->accumulated_path_length = calc_accumulated_path_length(offset, *mpc_cource);
+        mpc_course->accumulated_path_length = calc_accumulated_path_length(offset, *mpc_course);
     }
 
-    void set_yaw(MPCCource *mpc_cource)
+    void set_yaw(MPCCourse *mpc_course)
     {
-        for (int i = 0; i < mpc_cource->size() - 2; i++)
+        for (int i = 0; i < mpc_course->size() - 2; i++)
         {
-            Eigen::Vector2d p(mpc_cource->x.at(i), mpc_cource->y.at(i));
-            Eigen::Vector2d p_next(mpc_cource->x.at(i + 1), mpc_cource->y.at(i + 1));
+            Eigen::Vector2d p(mpc_course->x.at(i), mpc_course->y.at(i));
+            Eigen::Vector2d p_next(mpc_course->x.at(i + 1), mpc_course->y.at(i + 1));
 
             const auto delta_vec = p_next - p;
 
-            mpc_cource->yaw.at(i) = std::atan2(delta_vec(1), delta_vec(0));
+            mpc_course->yaw.at(i) = std::atan2(delta_vec(1), delta_vec(0));
         }
-        mpc_cource->yaw.at(mpc_cource->size() - 1) = mpc_cource->yaw.at(mpc_cource->size() - 2);
+        mpc_course->yaw.at(mpc_course->size() - 1) = mpc_course->yaw.at(mpc_course->size() - 2);
     }
 
     TEST_F(FrenetSerretConverterTest, TestGlobal2Frenet_STRAIGHT)
     {
         const std::string long_straight_path = "../reference_path/step_path_01m.csv";
-        MPCCource straight_path = set_cource_test(long_straight_path);
+        MPCCourse straight_path = set_course_test(long_straight_path);
         set_accumulated_path_length(0.0, &straight_path);
         set_yaw(&straight_path);
 
@@ -184,7 +184,7 @@ namespace pathtrack_tools
     TEST_F(FrenetSerretConverterTest, TestGlobal2Frenet_STRAIGHT_2)
     {
         const std::string long_straight_path = "../reference_path/straight_path2.csv";
-        MPCCource straight_path = set_cource_test(long_straight_path);
+        MPCCourse straight_path = set_course_test(long_straight_path);
         set_accumulated_path_length(0.0, &straight_path);
         set_yaw(&straight_path);
 

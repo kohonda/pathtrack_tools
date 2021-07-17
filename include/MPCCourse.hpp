@@ -3,21 +3,21 @@
 #include <vector>
 
 ///
-/// @struct Reference Cource for MPC
+/// @struct Reference Course for MPC
 /// @brief Date interface of reference path, speed, drivable are
 ///
-struct MPCCource
+struct MPCCourse
 {
-    public:
+public:
     // NOTE : ALL VECTORs MUST HAVE THE SAME SIZE.
-    std::vector<double> x;                        //!< @brief reference position x vector, global coordinate
-    std::vector<double> y;                        //!< @brief reference position y vector, global coordinate
-    std::vector<double> z;                        //!< @brief reference position z vector, global coordinate, now only used for globa2frenet
-    std::vector<double> yaw;                      //!< @brief yaw pose yaw[rad] vector, now not used
-    std::vector<double> speed;                    //!< @brief speed[m/s] vector
-    std::vector<double> curvature;                //!< @brief curvature vector
-    std::vector<double> accumulated_path_length;  //!< @brief Int egral of the reference path, which is x_f_ref[m]
-    std::vector<double> drivable_width;           //!< @brief drivable cource width[m]
+    std::vector<double> x;                       //!< @brief reference position x vector, global coordinate
+    std::vector<double> y;                       //!< @brief reference position y vector, global coordinate
+    std::vector<double> z;                       //!< @brief reference position z vector, global coordinate, now only used for globa2frenet
+    std::vector<double> yaw;                     //!< @brief yaw pose yaw[rad] vector, now not used
+    std::vector<double> speed;                   //!< @brief speed[m/s] vector
+    std::vector<double> curvature;               //!< @brief curvature vector
+    std::vector<double> accumulated_path_length; //!< @brief Int egral of the reference path, which is x_f_ref[m]
+    std::vector<double> drivable_width;          //!< @brief drivable cource width[m]
 
     /**
      * @brief clear all vectors
@@ -37,10 +37,10 @@ struct MPCCource
      *
      * @param vector size
      */
-    void resize(const int& size);
+    void resize(const int &size);
 };
 
-inline void MPCCource::clear()
+inline void MPCCourse::clear()
 {
     x.clear();
     y.clear();
@@ -52,7 +52,7 @@ inline void MPCCource::clear()
     drivable_width.clear();
 }
 
-inline int MPCCource::size() const
+inline int MPCCourse::size() const
 {
     if (x.size() == y.size() && x.size() == z.size() && x.size() == yaw.size() && x.size() == speed.size() && x.size() == curvature.size() && x.size() == accumulated_path_length.size() &&
         x.size() == drivable_width.size())
@@ -61,12 +61,12 @@ inline int MPCCource::size() const
     }
     else
     {
-        std::cerr << "[MPCCource] Reference Cource size is invalid!" << std::endl;
+        std::cerr << "[MPCCourse] Reference Cource size is invalid!" << std::endl;
         return -1;
     }
 }
 
-inline void MPCCource::resize(const int& size)
+inline void MPCCourse::resize(const int &size)
 {
     x.resize(size);
     y.resize(size);

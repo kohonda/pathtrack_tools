@@ -1,0 +1,1 @@
+add_unit_test(course_manager course_manager_test)

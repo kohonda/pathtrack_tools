@@ -8,7 +8,7 @@ target_include_directories(
 
 target_link_libraries(
     example
-    cource_manager
+    course_manager
     frenet_serret_converter
     frenet_state_filter
     vehicle_dynamics_simulator
