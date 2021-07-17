@@ -74,8 +74,8 @@ int main()
         // coordinate convert
         const FrenetCoordinate ego_pose_frenet = frenet_serret_converter.global2frenet(course_manager.get_mpc_cource(), ego_pose_global);
 
-        // const auto estimated_dy_f = frenet_state_filter.estimate_dy_f(ego_pose_frenet.y_f);
-        const auto estimated_dy_f = frenet_state_filter.estimate_dy_f(ego_pose_frenet, ego_twist);
+        const auto estimated_dy_f = frenet_state_filter.estimate_dy_f(ego_pose_frenet.y_f);
+        // const auto estimated_dy_f = frenet_state_filter.estimate_dy_f(ego_pose_frenet, ego_twist);
 
         // ================================
         // Caluculate Control input here
