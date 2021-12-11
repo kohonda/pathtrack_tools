@@ -2,11 +2,18 @@
 
 namespace pathtrack_tools
 {
-    FrenetSerretConverter::FrenetSerretConverter(/* args */)
+    FrenetSerretConverter::FrenetSerretConverter()
     {
-        previous_nearest_index_ = 0;
-        accumulated_x_f_to_nearest_index_ = 0.0;
-        look_ahead_index_range_ = 100; // TODO: Change according to vehicle speed.
+    }
+
+    FrenetSerretConverter::FrenetSerretConverter(const bool use_previous_pose)
+    {
+        if (use_previous_pose == false)
+        {
+            const int enough_big_num = 100000;
+            look_ahead_index_range_ = enough_big_num;
+        }
+        use_previous_pose_ = use_previous_pose;
     }
 
     FrenetSerretConverter::~FrenetSerretConverter()
@@ -47,7 +54,7 @@ namespace pathtrack_tools
         const double C = -mpc_course.x[backward_pt_index] * A - mpc_course.y[backward_pt_index] * B;
 
         // 4. Caluculate y in frenet-serret coordinate system
-        const double current_y_f = (A * pose_g.x + B * pose_g.y + C) / std::sqrt(A * A + B * B);
+        const double current_y_f = (A * pose_g.x + B * pose_g.y + C) / std::max(std::sqrt(A * A + B * B), 0.0001);
 
         // 5. Caluculate x in frenet-serret coordinate system
         // Calculate the total length of a straight line connecting two way points to the nearest waypoint.
@@ -67,13 +74,22 @@ namespace pathtrack_tools
         // Add a diff length from nearest waypoint
         const double current_x_f = accumulated_x_f_to_nearest_index_ + delta_xf_from_nearest_pt(current_nearest_index, backward_pt_index, forward_pt_index, mpc_course, pose_g);
 
-        // 6. Caluculate yaw in frenet-serret coordinate system
+        // 6. Calculate yaw in frenet-serret coordinate system
         const double current_yaw_f = pose_g.yaw - std::atan2(-A, B);
+        const double corrected_current_yaw_f = std::atan2(std::sin(current_yaw_f), std::cos(current_yaw_f));
 
         // 7. Take over the nearest_point_index for the next calculation.
-        previous_nearest_index_ = current_nearest_index;
+        if (use_previous_pose_)
+        {
+            previous_nearest_index_ = current_nearest_index;
+        }
+        else
+        {
+            previous_nearest_index_ = 0;
+            accumulated_x_f_to_nearest_index_ = 0.0;
+        }
 
-        const FrenetCoordinate pose_f(current_x_f, current_y_f, current_yaw_f);
+        const FrenetCoordinate pose_f(current_x_f, current_y_f, corrected_current_yaw_f);
         return pose_f;
     }
 
@@ -112,7 +128,7 @@ namespace pathtrack_tools
     {
         if (mpc_course.size() == 0)
         {
-            std::cerr << "[MPCCourse] Reference Cource size is zero!" << std::endl;
+            std::cerr << "[MPCCourse] Reference Course size is zero!" << std::endl;
             return -1;
         }
 

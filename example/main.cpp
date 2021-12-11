@@ -35,12 +35,12 @@ int main()
     ped_twist.x = 0.0;
     ped_twist.y = 1.0;
 
-    // Set Driving cource
+    // Set Driving course
     pathtrack_tools::CourseManager course_manager;
-    course_manager.set_cource_from_csv("../reference_path/sinwave_cource.csv");
+    course_manager.set_course_from_csv("../reference_path/sinwave_course.csv");
 
-    std::function<double(double)> cource_curvature = [&course_manager](const double &x_f) { return course_manager.get_curvature(x_f); };
-    std::function<double(double)> cource_speed = [&course_manager](const double &x_f) { return course_manager.get_speed(x_f); };
+    std::function<double(double)> course_curvature = [&course_manager](const double &x_f) { return course_manager.get_curvature(x_f); };
+    std::function<double(double)> course_speed = [&course_manager](const double &x_f) { return course_manager.get_speed(x_f); };
     std::function<double(double)> drivable_width = [&course_manager](const double &x_f) { return course_manager.get_drivable_width(x_f); };
 
     // Frenet Serret Conveter
@@ -72,12 +72,12 @@ int main()
         stop_watch.lap();
 
         // coordinate convert
-        const FrenetCoordinate ego_pose_frenet = frenet_serret_converter.global2frenet(course_manager.get_mpc_cource(), ego_pose_global);
+        const FrenetCoordinate ego_pose_frenet = frenet_serret_converter.global2frenet(course_manager.get_mpc_course(), ego_pose_global);
 
         const auto estimated_dy_f = frenet_state_filter.estimate_dy_f(ego_pose_frenet.y_f);
 
         // ================================
-        // Caluculate Control input here
+        // Calculate control input
         // ================================
 
         // stop watch end
